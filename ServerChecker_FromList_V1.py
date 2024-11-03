@@ -3,22 +3,23 @@ import requests
 Input_File = input('File Path:')
 x = 0
 https = 'http://'
-
-with open(Input_File, 'r') as file:
+with open(OG_proxy_file, 'r') as file:
         print('File List Opened')
+        Good_IP_List = []  
         for lines in file:
                 linestripped = lines.strip()
-                print('Read Line')
-                x += 1 
-                if x >= 5: #set to 5 for test reasons(ex. my list is 300 lines)
-                       print('Loop Broke')
-                       break
+                x += 1
                 try:
-                    r = requests.get(https+linestripped)
-                    if r.status_code == 200:
-                           print('Good Connection')
-                
-                except Exception as e:
-                       print('No Connection')
-                       continue
-                
+                     r = requests.get(https+linestripped, timeout=1)
+                     if r.status_code == 200:
+                           Good_IP_List.append(linestripped)
+                           print('Good IP')
+                except requests.RequestException as e:
+                     print('Bad IP')
+                    
+                if x >= 14: #<- set list # maximum here
+                       print('Loop Broke')
+                       for ip in Good_IP_List:
+                             print(ip)
+                       break
+                       
